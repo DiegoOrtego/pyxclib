@@ -15,7 +15,8 @@ def normalize_graph(X):
     return mat
 
 
-@njit(parallel=True, nogil=True)
+# DOH: turned parallel True to False because it leads to performance issues after the random walk (things go slower).
+@njit(parallel=False, nogil=True)
 def _random_walk(q_rng, q_lbl, l_rng, l_qry, walk_to, p_reset, start, end):
     """
     Compute random walk for a batch of labels in the label space
