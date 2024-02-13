@@ -123,7 +123,7 @@ def b_kmeans_sparse(X, index, metric='cosine', tol=1e-4, leakage=None):
         cluster = np.random.randint(
             low=0, high=X.shape[0], size=(2))
     _centeroids = X[cluster].todense()
-    _similarity = _sdist(X, _centeroids,
+    _similarity = _sdist(X.A, _centeroids.A,
                          metric=metric, norm='l2')
     old_sim, new_sim = -1000000, -2
     while new_sim - old_sim >= tol:
@@ -133,7 +133,7 @@ def b_kmeans_sparse(X, index, metric='cosine', tol=1e-4, leakage=None):
             X[x, :].mean(
                 axis=0) for x in clustered_lbs
         ])
-        _similarity = _sdist(X, _centeroids,
+        _similarity = _sdist(X.A, _centeroids.A,
                              metric=metric, norm='l2')
         old_sim, new_sim = new_sim, np.sum(
             [np.sum(
@@ -189,6 +189,11 @@ def cluster_balance(X, clusters, num_clusters, splitter,
     num_threads: int, optional (default=5)
         number of threads to use
         * it'll use a single thread to initial partitions to avoid memory error
+    verbose: boolean, optional (default=True)
+        print time taken etc
+    use_sth_till: int, optional (default=-1)
+        use single thread till these many clusters
+
     Returns:
     --------
     clusters: a list of list
